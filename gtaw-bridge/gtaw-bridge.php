@@ -139,30 +139,150 @@ function gtaw_main_page_callback() {
     ?>
     <style>
         /* Dashboard Layout */
-        .gtaw-dashboard {
-            margin-top: 20px;
-        }
-        
-        .gtaw-dashboard-main {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -15px;
-        }
-        
-        .gtaw-dashboard-modules,
-        .gtaw-dashboard-logs {
-            flex: 1 1 100%;
-            padding: 0 15px;
+        .gtaw-dashboard-header {
             margin-bottom: 30px;
         }
         
-        @media (min-width: 1200px) {
-            .gtaw-dashboard-modules {
-                flex: 0 0 60%;
+        .gtaw-hero-header {
+            background-image: url('<?php echo plugins_url('gtaw-bridge/assets/img/header-bg.webp', dirname(__FILE__)); ?>');
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+            overflow: hidden;
+            padding: 0;
+            position: relative;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        .gtaw-hero-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+        
+        .gtaw-hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 30px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .gtaw-hero-text {
+            flex: 1;
+        }
+        
+        .gtaw-hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            color: #fff;
+        }
+        
+        .gtaw-hero-description {
+            font-size: 16px;
+            margin: 0;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+        
+        .gtaw-hero-version {
+            font-size: 14px;
+            opacity: 0.7;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .gtaw-hero-logo {
+            margin-left: 20px;
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3));
+        }
+        
+        /* Quick Info Panel */
+        .gtaw-quick-info-panel {
+            display: flex;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .gtaw-quick-info-section {
+            flex: 1;
+            padding: 15px;
+            border-right: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .gtaw-quick-info-section:last-child {
+            border-right: none;
+        }
+        
+        .gtaw-quick-info-icon {
+            margin-right: 10px;
+            color: #2271b1;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .gtaw-quick-info-content {
+            flex: 1;
+        }
+        
+        .gtaw-quick-info-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #1d2327;
+        }
+        
+        .gtaw-quick-info-content ul {
+            margin: 0;
+            padding: 0 0 0 15px;
+        }
+        
+        .gtaw-quick-info-content p {
+            margin: 0 0 5px 0;
+            font-size: 13px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 782px) {
+            .gtaw-hero-content {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .gtaw-dashboard-logs {
-                flex: 0 0 40%;
+            .gtaw-hero-logo {
+                margin: 15px 0 0 0;
+            }
+            
+            .gtaw-quick-info-panel {
+                flex-direction: column;
+            }
+            
+            .gtaw-quick-info-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .gtaw-quick-info-section:last-child {
+                border-bottom: none;
             }
         }
         
@@ -298,52 +418,62 @@ function gtaw_main_page_callback() {
         }
     </style>
     <div class="wrap gtaw-dashboard">
-        <h1>GTA:W Bridge Dashboard</h1>
         
-        <?php if ($updated): ?>
-        <div class="notice notice-success is-dismissible">
-            <p><strong>Settings updated successfully!</strong></p>
-        </div>
-        <?php endif; ?>
+
         
         <div class="gtaw-dashboard-header">
-            <div class="welcome-panel">
-                <div class="welcome-panel-content">
-                    <h2>Welcome to GTA:W Bridge</h2>
-                    <p class="about-description">Connect your WordPress site with the GTA World roleplay platform for seamless integration.</p>
-                    
-                    <div class="welcome-panel-column-container">
-                        <div class="welcome-panel-column">
-                            <h3>Getting Started</h3>
-                            <ul>
-                                <li><a href="https://github.com/Botticena/gtaw-bridge/" target="_blank" class="button button-primary">Documentation</a></li>
-                                <li>Activate the modules you need below</li>
-                                <li>Configure each module's settings</li>
-                            </ul>
-                        </div>
-                        <div class="welcome-panel-column">
-                            <h3>Quick Actions</h3>
-                            <ul>
-                                <?php if ($oauth_status): ?>
-                                <li><a href="<?php echo admin_url('admin.php?page=gtaw-oauth'); ?>">OAuth Settings</a></li>
-                                <?php endif; ?>
-                                <?php if ($discord_status): ?>
-                                <li><a href="<?php echo admin_url('admin.php?page=gtaw-discord'); ?>">Discord Settings</a></li>
-                                <?php endif; ?>
-                                <?php if ($fleeca_status): ?>
-                                <li><a href="<?php echo admin_url('admin.php?page=gtaw-fleeca'); ?>">Fleeca Bank Settings</a></li>
-                                <?php endif; ?>
-                                <?php if (!$oauth_status && !$discord_status && !$fleeca_status): ?>
-                                <li>No active modules. Activate one below to access its settings.</li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
-                        <div class="welcome-panel-column welcome-panel-last">
-                            <h3>About</h3>
-                            <p>Version: 1.1<br>
-                            Created by: <a href="https://forum.gta.world/en/profile/56418-lena/" target="_blank">Lena</a><br>
-                            Need help? Open an issue on <a href="https://github.com/Botticena/gtaw-bridge/issues" target="_blank">GitHub</a></p>
-                        </div>
+            <div class="gtaw-hero-header">
+                <div class="gtaw-hero-overlay"></div>
+                <div class="gtaw-hero-content">
+                    <div class="gtaw-hero-text">
+                        <h1 class="gtaw-hero-title"><b>GTA:W Bridge</b></h1>
+                        <p class="gtaw-hero-description">WordPress Plugin for the GTA World Roleplay community.</p>
+                        <p class="gtaw-hero-version">Version 1.1</p>
+                    </div>
+                    <img src="<?php echo plugins_url('gtaw-bridge/assets/img/logo.webp', dirname(__FILE__)); ?>" alt="GTA:W Bridge Logo" class="gtaw-hero-logo">
+                </div>
+            </div>
+            
+            <div class="gtaw-quick-info-panel">
+                <div class="gtaw-quick-info-section">
+                    <span class="dashicons dashicons-book-alt gtaw-quick-info-icon"></span>
+                    <div class="gtaw-quick-info-content">
+                        <h3>Getting Started</h3>
+                        <ul>
+                            <li><a href="https://github.com/Botticena/gtaw-bridge/">Documentation</a></li>
+                            <li>Activate modules below</li>
+                            <li>Configure each module</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="gtaw-quick-info-section">
+                    <span class="dashicons dashicons-admin-tools gtaw-quick-info-icon"></span>
+                    <div class="gtaw-quick-info-content">
+                        <h3>Quick Actions</h3>
+                        <ul>
+                            <?php if ($oauth_status): ?>
+                            <li><a href="<?php echo admin_url('admin.php?page=gtaw-oauth'); ?>">OAuth Settings</a></li>
+                            <?php endif; ?>
+                            <?php if ($discord_status): ?>
+                            <li><a href="<?php echo admin_url('admin.php?page=gtaw-discord'); ?>">Discord Settings</a></li>
+                            <?php endif; ?>
+                            <?php if ($fleeca_status): ?>
+                            <li><a href="<?php echo admin_url('admin.php?page=gtaw-fleeca'); ?>">Fleeca Bank Settings</a></li>
+                            <?php endif; ?>
+                            <?php if (!$oauth_status && !$discord_status && !$fleeca_status): ?>
+                            <li>No active modules</li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="gtaw-quick-info-section">
+                    <span class="dashicons dashicons-info-outline gtaw-quick-info-icon"></span>
+                    <div class="gtaw-quick-info-content">
+                        <h3>About</h3>
+                        <p>Created by <a href="https://forum.gta.world/en/profile/56418-lena/" target="_blank">Lena</a></p>
+                        <p>Need help? <a href="https://github.com/Botticena/gtaw-bridge/issues" target="_blank">GitHub Issues</a></p>
                     </div>
                 </div>
             </div>
@@ -400,7 +530,7 @@ function gtaw_main_page_callback() {
             </div>
             
             <div class="gtaw-dashboard-logs">
-                <h2>Recent Activity Logs</h2>
+                <br><h2>Recent Activity Logs</h2>
                 <p>Here are the most recent logs from all modules.</p>
                 
                 <table class="wp-list-table widefat fixed striped">
